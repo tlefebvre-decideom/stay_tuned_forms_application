@@ -1,0 +1,40 @@
+{
+  "name": "send_newsletter",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 2,
+              "triggerAtDay": [
+                3
+              ]
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -304,
+        32
+      ],
+      "id": "0f77924a-14b0-4944-9249-010b6db7b7ab",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dce70736-7c89-4072-b5ad-128cd92b482d",
+  "meta": {
+    "instanceId": "c7a88f466b1ac023811ddd0f7af86546ff1b8f60969d60a069c56b79b0bb6e20"
+  },
+  "id": "1f7y5UMV4dPwtIU6",
+  "tags": []
+}

@@ -1,0 +1,426 @@
+{
+  "name": "create_articles",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        368,
+        224
+      ],
+      "id": "460a19cd-4571-48c2-a40e-a6695dc99381",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "pPerqlroFeFX8hT6",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "scrape",
+        "url": "={{ $json.body.url }}",
+        "requestOptions": {}
+      },
+      "type": "@mendable/n8n-nodes-firecrawl.firecrawl",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        64
+      ],
+      "id": "368f513d-808c-40b5-ba7b-3e97a6f96981",
+      "name": "Scrape url",
+      "credentials": {
+        "firecrawlApi": {
+          "id": "4Qysr3IfD0aqjgcZ",
+          "name": "Firecrawl account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "e5780172-1bf0-479f-8211-b90e557f64c6",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -848,
+        688
+      ],
+      "id": "87cccde6-004d-4352-a085-7d20e5ab66f8",
+      "name": "Webhook",
+      "webhookId": "e5780172-1bf0-479f-8211-b90e557f64c6"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.source_type }}",
+                    "rightValue": "URL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d972270f-b69c-4426-a24b-135b130ad863"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b581ef06-772d-4417-a284-d9c7862a9cca",
+                    "leftValue": "={{ $json.body.source_type }}",
+                    "rightValue": "Vidéo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1c5292dc-9049-4e7c-a005-a89dbc7bf4a9",
+                    "leftValue": "={{ $json.body.source_type }}",
+                    "rightValue": "LinkedIn",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "10d47b1f-7a70-4a09-80ce-9a502b40a8d7",
+                    "leftValue": "={{ $json.body.source_name }}",
+                    "rightValue": "Medium",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -592,
+        656
+      ],
+      "id": "433aa20b-66ec-45e1-98a5-5484ca329fdb",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "content": "## URL Flow\n\n",
+        "height": 368,
+        "width": 1376
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "fbcdd934-0096-40c8-8e8b-9695641a04a6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Video Flow \n\n",
+        "height": 336,
+        "width": 1376,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        384
+      ],
+      "typeVersion": 1,
+      "id": "87a7818c-f89b-4c07-a363-aff1e59c9171",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tags",
+          "mode": "list",
+          "cachedResultName": "tags"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        688,
+        224
+      ],
+      "id": "b8b6ed9c-a15c-4d27-bac5-19a7258abdbe",
+      "name": "Tags",
+      "credentials": {
+        "postgres": {
+          "id": "pbXymoxrOKdTQnhz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "topics",
+          "mode": "list",
+          "cachedResultName": "topics"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        592,
+        224
+      ],
+      "id": "ffbe6aed-43b3-4c7c-8a65-3109948f073f",
+      "name": "Topics",
+      "credentials": {
+        "postgres": {
+          "id": "pbXymoxrOKdTQnhz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"title\": {\n      \"type\": \"string\"\n    },\n    \"source_url\": {\n      \"type\": \"string\",\n      \"format\": \"uri\"\n    },\n    \"source_name\": {\n      \"type\": \"string\"\n    },\n    \"author_name\": {\n      \"type\": \"string\"\n    },\n    \"content_markdown\": {\n      \"type\": \"string\"\n    },\n    \"short_summary\": {\n      \"type\": \"string\"\n    },\n    \"first_image_url\": {\n      \"type\": \"string\",\n      \"format\": \"uri\"\n    },\n    \"difficulty\": {\n      \"type\": \"string\",\n      \"enum\": [\"Débutant\", \"Intermédiaire\", \"Avancé\", \"Inconnu\"]\n    },\n    \"type\": {\n      \"type\": \"string\"\n    }\n  }\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        800,
+        224
+      ],
+      "id": "b36e9708-11fa-44dc-a55a-a3e7a0f6bf40",
+      "name": "Article Parser"
+    },
+    {
+      "parameters": {
+        "content": "## LinkedIn Flow \n\n",
+        "height": 336,
+        "width": 1376,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        736
+      ],
+      "typeVersion": 1,
+      "id": "ee17c9d7-06b6-4744-a1a1-ffa10bdd4752",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data.markdown }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Vous êtes WebPageSummarizer, un agent spécialisé dans la synthèse de contenu à partir d’un document au format Markdown.\n\n--------------------------------------------------\n🎯 Objectif\n--------------------------------------------------\nVous recevez en entrée un texte brut au format Markdown, extrait d’une page web.\n\nVotre mission :\n1. Analyser et résumer fidèlement le contenu du Markdown fourni.  \n2. Déterminer automatiquement le **topic principal** parmi :  \n   - DBT  \n   - Snowflake  \n   (choisissez celui qui correspond le mieux au contenu).\n3. Produire un **résumé clair, concis, factuel et bien structuré**, directement utilisable dans un email.\n4. Les **images doivent être intégrées dans le résumé à l’endroit logique où elles apparaissent dans le texte**, et non regroupées à la fin.\n   - Si une image illustre une partie précise du contenu, insérez-la juste après le paragraphe concerné.\n   - Si une image n’a pas de lien clair avec une section, ignorez-la.\n\n--------------------------------------------------\n⚙️ Entrée attendue\n--------------------------------------------------\nVous recevez un JSON avec :\n{\n  \"markdown\": \"Contenu complet de la page au format Markdown\"\n}\n\n--------------------------------------------------\n🧾 Sortie JSON attendue\n--------------------------------------------------\n{\n  \"data\": \"### Résumé ... (texte Markdown avec les images intégrées à leur place pertinente)\",\n  \"topic\": \"DBT\" // ou \"Snowflake\",\n  \"type\":\"url\" // ou \"medium\"\n}\n\n--------------------------------------------------\n💡 Règles\n--------------------------------------------------\n- Ne JAMAIS inventer de contenu ni d’images inexistantes.\n- Intégrer les images au bon endroit dans le corps du texte :\n  - juste après la section qu’elles illustrent,\n  - sous la forme Markdown : `![texte alternatif](url)`.\n- Supprimer la section “### Images” si elle existe à la fin du texte.\n- Le résumé doit :\n  - être rédigé en **français clair**,\n  - conserver une structure logique (titres, sous-titres, paragraphes),\n  - être directement lisible dans un email.\n- La sortie doit être un **objet JSON valide**, sans texte additionnel ni balises ```json.\n\n--------------------------------------------------\n🧩 Exemple de sortie\n--------------------------------------------------\n{\n  \"data\": \"### Résumé des fonctionnalités avancées de CI dans dbt\\nLes workflows d’intégration continue (CI) de dbt améliorent la gouvernance et la qualité des données. Ils permettent d’analyser l’impact des modifications de code.\\n\\n![Aperçu du panneau Compare](https://docs.getdbt.com/img/docs/dbt-cloud/example-ci-compare-changes-tab.png?v=2)\\n\\nLes fonctionnalités avancées incluent la comparaison des changements, l’optimisation des comparaisons via `event_time`, et la mise en cache des résultats.\\n\\n![Optimisation avec event_time](https://docs.getdbt.com/img/docs/deploy/apples_to_apples.png?v=2)\",\n  \"topic\": \"DBT\"\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        464,
+        48
+      ],
+      "id": "651f14c3-14e4-4b15-93e1-97af490eccc6",
+      "name": "URL Summarizer Agent"
+    },
+    {
+      "parameters": {
+        "content": "## Medium Flow \n\n",
+        "height": 336,
+        "width": 1376,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        1088
+      ],
+      "typeVersion": 1,
+      "id": "606d93a6-3a01-4346-922c-f81ab789e67f",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "URL Summarizer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape url": {
+      "main": [
+        [
+          {
+            "node": "URL Summarizer Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Scrape url",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        []
+      ]
+    },
+    "Tags": {
+      "ai_tool": [
+        [
+          {
+            "node": "URL Summarizer Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Topics": {
+      "ai_tool": [
+        [
+          {
+            "node": "URL Summarizer Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Article Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "URL Summarizer Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL Summarizer Agent": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a4dd989c-5161-479c-8962-5eb79fc20ab1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c7a88f466b1ac023811ddd0f7af86546ff1b8f60969d60a069c56b79b0bb6e20"
+  },
+  "id": "R6s2dwllQTBc7k77",
+  "tags": []
+}
