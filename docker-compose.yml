@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_veille
+    environment:
+      POSTGRES_DB: veille_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - veille_net
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    user: node
+    environment:
+      - NODE_ENV=production
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_HOST=n8n
+      - N8N_EDITOR_BASE_URL=http://localhost:5678
+      - N8N_PUBLIC_URL=http://localhost:5678
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=veille_db
+      - DB_POSTGRESDB_USER=postgres
+      - DB_POSTGRESDB_PASSWORD=postgres
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - veille_net
+    depends_on:
+      - postgres
+
+  streamlit:
+    build: ./app
+    container_name: streamlit_app
+    environment:
+      - N8N_WEBHOOK_URL=http://n8n:5678/webhook-test/e5780172-1bf0-479f-8211-b90e557f64c6
+    ports:
+      - "8501:8501"
+    networks:
+      - veille_net
+    depends_on:
+      - n8n
+
+volumes:
+  postgres_data:
+  n8n_data:
+
+networks:
+  veille_net:
+    driver: bridge
